@@ -1,0 +1,124 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            
+            <div class="card mb-4">
+                <img class="card-img-top" src="<%=university.image %>" alt="<%=university.name %>">
+                <div class="card-body">
+                    <p class="float-right">Tuition: $<%= university.tuition %>/Year</p>
+                    <h3 class="card-title"><%=university.name %></h3>
+
+                    <p>
+                        <em>Submitted By <%= university.author.username %>, <%= moment(university.createdAt).fromNow() %></em>
+                    </p>
+                    
+                    <hr>
+                    <p class="card-text"><%= university.description %></p>
+                    
+                    <% if(currentUser && university.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+                        <a class="btn btn-warning" href="/universities/<%= university._id %>/edit">Edit</a>
+                        
+                        <form class="delete-form" action="/universities/<%= university._id %>?_method=DELETE" method="POST">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    <% } %>
+                    
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="text-right mb-4">
+                        <a class="btn btn-success" href="/universities/<%= university._id %>/comments/new">Add New Comment</a>
+                    </div>
+                    
+                    <div class="row">
+                        <% university.comments.forEach(function(comment){ %>
+                            
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <strong class="card-title"><%= comment.author.username %></strong>
+                                
+                                        <span class="float-right"><%= moment(comment.createdAt).fromNow() %></span>
+                                
+                                        <p class="card-text">
+                                            <%= comment.text %>
+                                        </p>
+                                
+                                        <% if(currentUser && comment.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+                                            <div class="float-right">
+                                                <a class="btn btn-sm btn-warning"
+                                                   href="/universities/<%= university._id %>/comments/<%= comment._id %>/edit">Edit</a>
+                                                   
+                                                <form class="delete-form" action="/universities/<%= university._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST">
+                                                    <input class="btn btn-sm btn-danger" type="submit" value="Delete">
+                                                </form>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>Examinations Links</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><a href="https://www.ielts.org" target="_blank">IELTS</a></li>
+                    <li class="list-group-item"><a href="https://www.ets.org/toefl" target="_blank">TOFFEL</a></li>
+                    <li class="list-group-item"><a href="https://www.ets.org/gre" target="_blank">GRE</a></li>
+                    <li class="list-group-item"><a href="https://www.lsac.org/jd/lsat/about-the-lsat" target="_blank">LSAT</a></li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h5>Show on maps</h5>
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    function initMap() {
+        var lat = <%= university.lat %>;
+        var lng = <%= university.lng %>;
+        var center = {lat: lat, lng: lng };
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 8,
+            center: center,
+            scrollwheel: false
+        });
+        var contentString = `
+          <strong><%= university.name %><br />
+          <%= university.location %></strong>
+          <p><%= university.description %></p>
+        `
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+        var marker = new google.maps.Marker({
+            position: center,
+            map: map
+        });
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+    }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap"></script>
+
+
+<% include ../partials/footer %>     
