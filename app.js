@@ -1,7 +1,7 @@
+require("dotenv").config();
 var express = require("express"),
 	app = express(),
 	bodyParser = require("body-parser"),
-	dotenv = require("dotenv"),
 	mongoose = require("mongoose"),
 	flash = require("connect-flash"),
 	passport = require("passport"),
@@ -16,10 +16,7 @@ var express = require("express"),
 	commentRoutes = require("./routes/comments"),
 	indexRoutes = require("./routes/index");
 
-const {
-	parsed: { MONGODB_URI },
-} = dotenv.config();
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
