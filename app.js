@@ -1,20 +1,20 @@
 require("dotenv").config();
 var express = require("express"),
-	app = express(),
-	bodyParser = require("body-parser"),
-	mongoose = require("mongoose"),
-	flash = require("connect-flash"),
-	passport = require("passport"),
-	LocalStrategy = require("passport-local"),
-	methodOverride = require("method-override"),
-	moment = require("moment"),
-	University = require("./models/university"),
-	Comment = require("./models/comment"),
-	User = require("./models/user"),
-	seedDB = require("./seeds"),
-	universityRoutes = require("./routes/universities"),
-	commentRoutes = require("./routes/comments"),
-	indexRoutes = require("./routes/index");
+  app = express(),
+  bodyParser = require("body-parser"),
+  mongoose = require("mongoose"),
+  flash = require("connect-flash"),
+  passport = require("passport"),
+  LocalStrategy = require("passport-local"),
+  methodOverride = require("method-override"),
+  moment = require("moment"),
+  University = require("./models/university"),
+  Comment = require("./models/comment"),
+  User = require("./models/user"),
+  seedDB = require("./seeds"),
+  universityRoutes = require("./routes/universities"),
+  commentRoutes = require("./routes/comments"),
+  indexRoutes = require("./routes/index");
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
@@ -28,11 +28,11 @@ app.use(flash());
 
 //PASSPORT CONFIGURATION
 app.use(
-	require("express-session")({
-		secret: "The Unicornsity is the secret.",
-		resave: false,
-		saveUninitialized: false,
-	})
+  require("express-session")({
+    secret: "The Unicornsity is the secret.",
+    resave: false,
+    saveUninitialized: false
+  })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -42,10 +42,10 @@ passport.deserializeUser(User.deserializeUser());
 
 //DEFINE USER OR NOT
 app.use(function (req, res, next) {
-	res.locals.currentUser = req.user;
-	res.locals.error = req.flash("error");
-	res.locals.success = req.flash("success");
-	next();
+  res.locals.currentUser = req.user;
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
+  next();
 });
 
 app.use(indexRoutes);
@@ -55,5 +55,5 @@ app.use("/universities/:id/comments", commentRoutes);
 const PORT = process.env.PORT || 5000;
 const IP = process.env.IP || "localhost";
 app.listen(PORT, IP, function () {
-	console.log(`The server has started on: ${IP}:${PORT}`);
+  console.log(`The server has started on: ${IP}:${PORT}`);
 });
