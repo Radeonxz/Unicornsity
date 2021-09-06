@@ -16,7 +16,10 @@ var express = require("express"),
   commentRoutes = require("./routes/comments"),
   indexRoutes = require("./routes/index");
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
@@ -54,6 +57,9 @@ app.use("/universities/:id/comments", commentRoutes);
 
 const PORT = process.env.PORT || 5000;
 const IP = process.env.IP || "localhost";
-app.listen(PORT, IP, function () {
+// app.listen(PORT, IP, function () {
+//   console.log(`The server has started on: ${IP}:${PORT}`);
+// });
+app.listen(PORT, function () {
   console.log(`The server has started on: ${IP}:${PORT}`);
 });
